@@ -19,27 +19,33 @@ FILE_SIGNATURES_HEX = {
     "zip": [0x50, 0x4B, 0x03, 0x04],
 }
 
-def prepend_magic_byes(filename,filetype):
+
+def prepend_magic_byes(filename, filetype):
     try:
         # check if the file already has the magic bytes of intended type
         with open(filename, "rb") as file:
             signature = file.read(len(FILE_SIGNATURES_HEX[filetype]))
             if signature == bytes(FILE_SIGNATURES_HEX[filetype]):
-                print(f"This file {filename} is already of type {filetype}")
-                return None
+                raise Exception(f"This file {filename} is already of type {filetype}")
 
         with open(filename, "rb+") as file:
             content = file.read()
             file.seek(0)
             file.write(bytes(FILE_SIGNATURES_HEX[filetype]))
             file.write(content)
-    except Exception as e:
-        sys.exit(e)
+    except Exception as exception:
+        sys.exit(exception)
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Set file options")
-    parser.add_argument("-f", "--filetype", required=True, choices=[key for key in FILE_SIGNATURES_HEX], help="Insert magic bytes of this file type")
+    parser.add_argument(
+        "-f",
+        "--filetype",
+        required=True,
+        choices=list(FILE_SIGNATURES_HEX),
+        help="Insert magic bytes of this file type",
+    )
     parser.add_argument("filename", type=str, help="the filename")
     args = parser.parse_args()
 
