@@ -27,3 +27,8 @@ code.php: GIF image data, version 87a, 16188 x 26736
 ## Alternatives
 
 Instead of using this script you can take any sample file of your choice from the internet or from your local filesystem and append the code to the end of it. But I found this a bit inconvenient when doing CTFs. With this tool the process is just running a python script.
+
+Here's a bash/zsh one liner to make a php file look like a gif file:
+```bash
+echo -n -e '\x47\x49\x46\x38\x37\x61' | cat - /path/to/php-webshell.php > image.gif
+```
