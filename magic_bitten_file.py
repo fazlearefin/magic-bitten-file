@@ -16,7 +16,7 @@ FILE_SIGNATURES_HEX = {
 }
 
 
-def prepend_magic_byes(filename, filetype):
+def prepend_magic_bytes(filename, filetype):
     try:
         # check if the file already has the magic bytes of intended type
         with open(filename, "rb") as file:
@@ -46,4 +46,4 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if args.filetype:
-        prepend_magic_byes(args.filename, args.filetype)
+        prepend_magic_bytes(args.filename, args.filetype)
