@@ -2,7 +2,7 @@
 
 ## Purpose
 
-The python script **`magic_bitten_file.py`** lets you insert the magic bytes of a certain file types of your choosing to be inserted at the beginning of a malicious file (such as a webshell). The file then can be uploaded on a vulnerable web server bypassing any file content checks and executed.
+The python script **`magic_bitten_file.py`** lets you insert the magic bytes of certain file types of your choosing to be inserted at the beginning of a malicious file (such as a webshell). The file then can be uploaded on a vulnerable web server bypassing any file content checks and executed.
 
 ## Usage
 
