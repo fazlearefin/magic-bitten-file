@@ -10,7 +10,7 @@ This python script does not require anything outside the Python Standard Libray.
 
 ```console
 $ # create a php file
-$ printf "%s\n" "<?php phpinfo(); ?>" > phpcode.php
+$ printf "%s\n" "<?php phpinfo(); ?>" > code.php
 
 $ # check what this file is detected as by linux file util
 $ file code.php
