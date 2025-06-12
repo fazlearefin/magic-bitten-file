@@ -3,7 +3,7 @@
 import argparse
 import sys
 
-FILE_SIGNATURES_HEX = {
+FILE_SIGNATURES = {
     "bz2": [0x42, 0x5A, 0x68],
     "gif": [0x47, 0x49, 0x46, 0x38, 0x37, 0x61],
     "gz": [0x1F, 0x8B],
@@ -16,43 +16,38 @@ FILE_SIGNATURES_HEX = {
 }
 
 def list_signatures():
-    """Prints all the available file type signatures."""
-    for filetype in FILE_SIGNATURES_HEX:
-        print(filetype)
+    """Print all available file type signatures."""
+    print('\n'.join(FILE_SIGNATURES))
 
 def prepend_magic_bytes(filename, filetype):
-    """Prepends the magic bytes of the specified file type to the given file."""
+    """Prepend magic bytes to the file if not already present."""
     try:
-        with open(filename, "rb") as file:
-            signature = file.read(len(FILE_SIGNATURES_HEX[filetype]))
-            if signature == bytes(FILE_SIGNATURES_HEX[filetype]):
-                raise ValueError(f"This file {filename} is already of type {filetype}")
+        with open(filename, 'rb+') as file:
+            # Read only the necessary bytes for signature check
+            signature = file.read(len(FILE_SIGNATURES[filetype]))
+            if signature == bytes(FILE_SIGNATURES[filetype]):
+                sys.exit(f"File {filename} is already of type {filetype}")
 
-        with open(filename, "rb+") as file:
-            content = file.read()
+            # Reset to start, write signature, then append original content
             file.seek(0)
-            file.write(bytes(FILE_SIGNATURES_HEX[filetype]))
-            file.write(content)
-    except ValueError as value_error:
-        sys.exit(value_error)
-    except (OSError, IOError) as error:
-        sys.exit(f"Error reading or writing to file {filename}: {error}")
+            content = file.read()  # Read remaining content
+            file.seek(0)
+            file.write(bytes(FILE_SIGNATURES[filetype]) + content)
+    except FileNotFoundError:
+        sys.exit(f"File {filename} not found")
+    except PermissionError:
+        sys.exit(f"Permission denied accessing {filename}")
+    except OSError as error:
+        sys.exit(f"Error processing {filename}: {error}")
 
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Set file options")
-    parser.add_argument(
-        "-f",
-        "--filetype",
-        choices=list(FILE_SIGNATURES_HEX),
-        help="Insert magic bytes of this file type",
-    )
-    parser.add_argument(
-        "-l",
-        "--list",
-        action="store_true",
-        help="List all the file signatures"
-    )
-    parser.add_argument("filename", type=str, nargs='?', help="the filename")
+def main():
+    """Handle command-line arguments and execute operations."""
+    parser = argparse.ArgumentParser(description="Modify file magic bytes")
+    parser.add_argument('-f', '--filetype', choices=FILE_SIGNATURES.keys(),
+                        help="File type for magic bytes")
+    parser.add_argument('-l', '--list', action='store_true',
+                        help="List all file signatures")
+    parser.add_argument('filename', type=str, nargs='?', help="Target file")
     args = parser.parse_args()
 
     if args.list:
@@ -60,4 +55,10 @@ if __name__ == "__main__":
     elif args.filetype and args.filename:
         prepend_magic_bytes(args.filename, args.filetype)
     else:
-        parser.print_help()
+        if not args.filetype and args.filename:
+            sys.exit("Error: --filetype is required when specifying a filename")
+        parser.print_help(sys.stderr)
+        sys.exit(1)
+
+if __name__ == '__main__':
+    main()
